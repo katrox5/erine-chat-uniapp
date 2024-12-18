@@ -5,7 +5,7 @@
       if (firstBackTime == 0) {
         uni.showToast({
           title: '再按一次退出应用',
-          position: 'bottom',
+          position: 'top',
         })
         firstBackTime = Date.now()
         setTimeout(() => {

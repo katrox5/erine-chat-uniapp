@@ -3,17 +3,23 @@
     <text class="header__title">Erine-Speed-128K</text>
     <view class="header__btn-group">
       <image class="header__btn header__clear-btn" src="/static/icons/clear.svg" />
-      <image class="header__btn" src="/static/icons/setting.svg" />
+      <image @click="modalRef.show" class="header__btn" src="/static/icons/setup.svg" />
     </view>
+    <view class="header__bottom-mask" />
   </view>
+  <setting-modal ref="modalRef" />
 </template>
 
 <script setup>
+  import { ref } from 'vue'
+  import settingModal from '@/components/setting-modal.vue'
+  const modalRef = ref(null)
   
 </script>
 
 <style scoped>
   .header__container {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -21,7 +27,7 @@
     padding-top: var(--status-bar-height, 18rpx);
   }
   .header__title {
-    font-size: 36rpx;
+    font-size: 40rpx;
     font-weight: bold;
     color: transparent;
     background-image: linear-gradient(to right, #8270ff, #59b8ed);
@@ -29,18 +35,23 @@
   }
   .header__btn-group {
     display: flex;
-    column-gap: 12rpx;
+    column-gap: 16rpx;
   }
   .header__btn {
-    width: 32rpx;
-    height: 32rpx;
+    width: 40rpx;
+    height: 40rpx;
     border-radius: 15%;
   }
-  .header__btn:active {
-    background-color: lightgray;
-  }
   .header__clear-btn {
-    width: 36rpx;
+    width: 44rpx;
+    height: 44rpx;
+  }
+  .header__bottom-mask {
+    position: absolute;
+    width: 100%;
     height: 36rpx;
+    bottom: -36rpx;
+    left: 0;
+    background-image: linear-gradient(to top, transparent, #f3f3f3);
   }
 </style>
