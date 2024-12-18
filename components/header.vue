@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12rpx 24rpx;
-    padding-top: 18rpx;
+    padding-top: var(--status-bar-height, 18rpx);
   }
   .header__title {
     font-size: 36rpx;
