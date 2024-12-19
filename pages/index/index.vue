@@ -4,12 +4,19 @@
     <Main class="view__main" />
     <Footer />
   </view>
+  <fui-toast ref="toast" />
 </template>
 
 <script setup>
-  import Header from '@/components/header.vue'
-  import Main from '@/components/main.vue'
-  import Footer from '@/components/footer.vue'
+  import { ref, provide } from 'vue'
+  import Header from '@/components/header'
+  import Main from '@/components/main'
+  import Footer from '@/components/footer'
+  import fuiToast from '@/components/firstui/fui-toast/fui-toast'
+  import { toastKey } from '@/constants'
+  
+  const toast = ref(null)
+  provide(toastKey, toast)
 </script>
 
 <style scoped>

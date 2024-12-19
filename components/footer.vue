@@ -2,20 +2,40 @@
   <view class="footer__container">
     <view class="footer__top-mask" />
     <fui-textarea
-      v-model="text"
+      v-model="prompt"
       maxlength="-1"
       height="64rpx"
       placeholder="请输入问题"
       :padding="['24rpx', '56rpx', '24rpx', '24rpx']"
     />
-    <image class="footer__btn" src="/static/icons/send.svg" />
+    <image @click="submit" class="footer__btn" src="/static/icons/send.svg" />
   </view>
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea.vue'
-  const text = ref('')
+  import { ref, inject } from 'vue'
+  import { useContentStore } from '@/stores/content'
+  import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea'
+  import { toastKey } from '@/constants'
+  
+  const contentStore = useContentStore()
+  const { addPrompt } = contentStore
+  
+  const toast = inject(toastKey)
+  
+  const prompt = ref('')
+  
+  function submit() {
+    // TODO 生成中返回
+    if (prompt.value === '') {
+      toast.value.show({
+        text: '问题不能为空'
+      })
+      return
+    }
+    addPrompt(prompt.value)
+    prompt.value = ''
+  }
 </script>
 
 <style scoped>
