@@ -3,18 +3,20 @@
     <text class="header__title">Erine-Speed-128K</text>
     <view class="header__btn-group">
       <image class="header__btn header__clear-btn" src="/static/icons/clear.svg" />
-      <image @click="modalRef.show" class="header__btn" src="/static/icons/setup.svg" />
+      <image class="header__btn" src="/static/icons/setup.svg" @click="navigateToSetup" />
     </view>
     <view class="header__bottom-mask" />
   </view>
-  <setting-modal ref="modalRef" />
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import settingModal from '@/components/setting-modal.vue'
-  const modalRef = ref(null)
-  
+  function navigateToSetup() {
+    uni.navigateTo({
+      url: '/pages/setup/index',
+      animationType: 'slide-in-right',
+      animationDuration: 150
+    })
+  }
 </script>
 
 <style scoped>
@@ -24,7 +26,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12rpx 24rpx;
-    padding-top: var(--status-bar-height, 18rpx);
+    padding-top: var(--status-bar-height);
   }
   .header__title {
     font-size: 40rpx;
