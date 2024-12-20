@@ -14,7 +14,7 @@
   import Footer from '@/components/footer'
   import fuiToast from '@/components/firstui/fui-toast/fui-toast'
   import { toastKey } from '@/constants'
-  
+
   const toast = ref(null)
   provide(toastKey, toast)
 </script>

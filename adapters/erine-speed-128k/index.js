@@ -1,9 +1,9 @@
-
 let token = ''
 
 function getToken(apiKey, secretKey) {
   return Promise((resolve) => {
-    const url = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%API_KEY%&client_secret=%SECRET_KEY%'
+    const url =
+      'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%API_KEY%&client_secret=%SECRET_KEY%'
     uni.request({
       url: url.replace('%API_KEY%', apiKey).replace('%SECRET_KEY%', secretKey),
       method: 'POST',

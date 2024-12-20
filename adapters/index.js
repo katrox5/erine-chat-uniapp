@@ -1,8 +1,6 @@
 import erineSpeed128k from './erine-speed-128k'
 
-export const modelList = [
-  'Erine-Speed-128K',
-]
+export const modelList = ['Erine-Speed-128K']
 
 export const modelAuth = new Map([
   [
@@ -16,7 +14,7 @@ export const modelAuth = new Map([
         key: 'secretKey',
         name: 'Secret Key',
       },
-    ]
+    ],
   ],
 ])
 
@@ -26,7 +24,7 @@ export const modelOptions = new Map([
     [
       {
         key: 'temperature',
-        name: '生成温度', 
+        name: '生成温度',
         type: 'number',
         range: [10, 100, 5, 0],
         default: 0.8,
@@ -38,10 +36,8 @@ export const modelOptions = new Map([
         range: [0, 100, 10, 100],
         default: 1.0,
       },
-    ]
+    ],
   ],
 ])
 
-export const modelAdapter = new Map([
-  ['Erine-Speed-128K', erineSpeed128k],
-])
+export const modelAdapter = new Map([['Erine-Speed-128K', erineSpeed128k]])

@@ -6,27 +6,31 @@ import { modelAdapter } from '@/adapters'
 export const useContentStore = defineStore('content', () => {
   const modelStore = useModelStore()
   const { currentModel, modelData } = storeToRefs(modelStore)
-  
+
   const contents = ref([])
-  
+
   watch(modelData, loadContents, { once: true })
-  
-  watch(contents, () => {
-    modelData.value.messages = contents.value.reduce((result, content) => {
-      result.push({
-        role: 'user',
-        content: content.prompt,
-      })
-      if (content.answer) {
+
+  watch(
+    contents,
+    () => {
+      modelData.value.messages = contents.value.reduce((result, content) => {
         result.push({
-          role: 'assistant',
-          content: content.answer,
+          role: 'user',
+          content: content.prompt,
         })
-      }
-      return result
-    }, [])
-  }, { deep: true })
-  
+        if (content.answer) {
+          result.push({
+            role: 'assistant',
+            content: content.answer,
+          })
+        }
+        return result
+      }, [])
+    },
+    { deep: true },
+  )
+
   function addPrompt(prompt) {
     const index = contents.value.length - 1
     if (!contents.value[index]?.answer) {
@@ -34,15 +38,15 @@ export const useContentStore = defineStore('content', () => {
     }
     contents.value.push({ prompt })
   }
-  
+
   function setAnswer(answer, index) {
     contents.value[index].answer = answer
   }
-  
+
   function clearContents() {
     contents.value = []
   }
-  
+
   function loadContents() {
     const adpater = modelAdapter.get(currentModel.value)
     const items = adpater.readMessages(modelData.value.messages)
@@ -50,7 +54,7 @@ export const useContentStore = defineStore('content', () => {
       contents.value.push(item)
     }
   }
-  
+
   return {
     contents,
     addPrompt,

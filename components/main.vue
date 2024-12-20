@@ -7,8 +7,8 @@
             {{ item.answer }}
           </view>
           <view v-else class="card__skeleton">
-            <view class="card__skeleton-bar" style="width: 100%;" />
-            <view class="card__skeleton-bar" style="width: 60%;" />
+            <view class="card__skeleton-bar" style="width: 100%" />
+            <view class="card__skeleton-bar" style="width: 60%" />
           </view>
         </view>
       </fui-card>
@@ -20,7 +20,7 @@
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import fuiCard from '@/components/firstui/fui-card/fui-card'
-  
+
   const contentStore = useContentStore()
   const { contents } = storeToRefs(contentStore)
 </script>
@@ -39,7 +39,12 @@
   .card__skeleton-bar {
     height: 32rpx;
     border-radius: 8rpx;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.15) 37%, rgba(0, 0, 0, 0.06) 63%);
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.06) 25%,
+      rgba(0, 0, 0, 0.15) 37%,
+      rgba(0, 0, 0, 0.06) 63%
+    );
     background-size: 400% 100%;
     animation: skeleton-loading 1.4s ease infinite;
   }

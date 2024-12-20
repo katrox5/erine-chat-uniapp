@@ -2,17 +2,23 @@
   <view class="header__container">
     <text class="header__title">{{ currentModel }}</text>
     <view class="header__btn-group">
-      <image class="header__btn header__clear-btn" src="/static/icons/clear.svg" @click="openPopup" />
+      <image
+        class="header__btn header__clear-btn"
+        src="/static/icons/clear.svg"
+        @click="openPopup"
+      />
       <image class="header__btn" src="/static/icons/setup.svg" @click="navigateToSetup" />
     </view>
     <view class="header__bottom-mask" />
   </view>
   <fui-top-popup :show="popupVisible" @close="closePopup">
-  	<view class="popup__container">
+    <view class="popup__container">
       <text class="popup__tips">是否清除所有对话？该操作不可恢复。</text>
-  		<button plain class="popup__btn popup__confirm" @click="clearContents(), closePopup()">确认清除</button>
-      <button plain class="popup__btn popup__cancel" @click="closePopup">取消</button>
-  	</view>
+      <button plain class="popup__btn popup__confirm" @click="(clearContents(), closePopup())">
+        确认清除
+      </button>
+      <button plain class="popup__btn popup__cancel" @click="closePopup"> 取消 </button>
+    </view>
   </fui-top-popup>
 </template>
 
@@ -22,26 +28,26 @@
   import { useModelStore } from '@/stores/model'
   import { useContentStore } from '@/stores/content'
   import fuiTopPopup from '@/components/firstui/fui-top-popup/fui-top-popup'
-  
+
   const modelStore = useModelStore()
   const { currentModel } = storeToRefs(modelStore)
   const { clearContents } = useContentStore()
-  
+
   const popupVisible = ref(false)
-  
+
   function openPopup() {
     popupVisible.value = true
   }
-  
+
   function closePopup() {
     popupVisible.value = false
   }
-  
+
   function navigateToSetup() {
     uni.navigateTo({
       url: '/pages/setup/index',
       animationType: 'slide-in-right',
-      animationDuration: 150
+      animationDuration: 150,
     })
   }
 </script>
@@ -105,7 +111,7 @@
     border-radius: 0;
     font-size: 32rpx;
   }
- .popup__btn:active {
+  .popup__btn:active {
     background-color: rgba(0, 0, 0, 0.2);
   }
   .popup__confirm {

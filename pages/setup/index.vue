@@ -48,7 +48,7 @@
                   :step="item.range[2]"
                   :value="modelData.options[item.key] * 100 - item.range[3]"
                   @change="(e) => optionChange((e.detail.value + item.range[3]) / 100, item.key)"
-                  style="margin: 8rpx 0; flex-grow: 1;"
+                  style="margin: 8rpx 0; flex-grow: 1"
                   block-size="14"
                 />
                 <text>{{ modelData.options[item.key]?.toFixed(2) }}</text>
@@ -75,27 +75,27 @@
   import fuiActionSheet from '@/components/firstui/fui-actionsheet/fui-actionsheet'
   import { modelList, modelAuth, modelOptions } from '@/adapters'
   import { useModelStore } from '@/stores/model'
-  
+
   const actionSheetVisible = ref(false)
-  
+
   const modelStore = useModelStore()
   const { currentModel, modelData } = storeToRefs(modelStore)
-  
+
   function navigateBack() {
     uni.navigateBack({
       animationType: 'slide-out-right',
-      animationDuration: 150
+      animationDuration: 150,
     })
   }
-  
+
   function optionChange(value, option) {
     modelData.value.options[option] = value
   }
-  
+
   function toggleActionSheet() {
     actionSheetVisible.value = !actionSheetVisible.value
   }
-  
+
   function selectModel({ index }) {
     currentModel.value = modelList[index]
     toggleActionSheet()
@@ -146,7 +146,7 @@
   .card__item {
     display: grid;
     align-items: center;
-    grid-template-columns: .4fr .6fr;
+    grid-template-columns: 0.4fr 0.6fr;
     padding: 16rpx 0 16rpx 0;
   }
   .card__item:not(:first-child) {
