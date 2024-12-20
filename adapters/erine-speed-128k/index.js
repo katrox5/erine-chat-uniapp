@@ -14,7 +14,7 @@ function getToken(apiKey, secretKey) {
   })
 }
 
-export async function request(body, auth) {
+async function request(body, auth) {
   if (!token) {
     token = await getToken(auth.apiKey, auth.secretKey)
   }
@@ -33,4 +33,27 @@ export async function request(body, auth) {
       console.log('fail')
     },
   })
+}
+
+function* readMessages(messages) {
+  for (let i = 0; i < messages.length; i += 2) {
+    const prompt = messages[i]
+    const answer = messages[i + 1]
+    if (
+      prompt['role'] != 'user' ||
+      !prompt['content'] ||
+      answer?.['role'] != 'assistant' ||
+      !answer['content']
+    ) {
+      continue
+    }
+    yield {
+      prompt: prompt['content'],
+      answer: answer['content'],
+    }
+  }
+}
+
+export default {
+  readMessages,
 }

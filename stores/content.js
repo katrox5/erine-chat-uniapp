@@ -1,13 +1,18 @@
-import { ref, computed, watchEffect } from 'vue'
-import { defineStore } from 'pinia'
+import { ref, watch } from 'vue'
+import { defineStore, storeToRefs } from 'pinia'
+import { useModelStore } from './model'
+import { modelAdapter } from '@/adapters'
 
 export const useContentStore = defineStore('content', () => {
-  const contents = ref([])
-  loadContents()
+  const modelStore = useModelStore()
+  const { currentModel, modelData } = storeToRefs(modelStore)
   
-  // custom
-  const messages = computed(() =>
-    contents.value.reduce((result, content) => {
+  const contents = ref([])
+  
+  watch(modelData, loadContents, { once: true })
+  
+  watch(contents, () => {
+    modelData.value.messages = contents.value.reduce((result, content) => {
       result.push({
         role: 'user',
         content: content.prompt,
@@ -19,8 +24,8 @@ export const useContentStore = defineStore('content', () => {
         })
       }
       return result
-    }, []),
-  )
+    }, [])
+  }, { deep: true })
   
   function addPrompt(prompt) {
     const index = contents.value.length - 1
@@ -38,35 +43,16 @@ export const useContentStore = defineStore('content', () => {
     contents.value = []
   }
   
-  // custom
   function loadContents() {
-    const messages = uni.getStorageSync('messages') || []
-    for (let i = 0; i < messages.length; i += 2) {
-      const prompt = messages[i]
-      const answer = messages[i + 1]
-      if (
-        prompt['role'] != 'user' ||
-        !prompt['content'] ||
-        answer?.['role'] != 'assistant' ||
-        !answer['content']
-      ) {
-        continue
-      }
-      contents.value.push({
-        prompt: prompt['content'],
-        answer: answer['content'],
-      })
+    const adpater = modelAdapter.get(currentModel.value)
+    const items = adpater.readMessages(modelData.value.messages)
+    for (const item of items) {
+      contents.value.push(item)
     }
   }
   
-  // watchEffect(() => uni.setStorage({
-  //   key: 'messages',
-  //   data: messages.value
-  // }))
-  
   return {
     contents,
-    messages,
     addPrompt,
     setAnswer,
     clearContents,

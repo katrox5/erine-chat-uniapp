@@ -1,3 +1,4 @@
+import erineSpeed128k from './erine-speed-128k'
 
 export const modelList = [
   'Erine-Speed-128K',
@@ -39,4 +40,8 @@ export const modelOptions = new Map([
       },
     ]
   ],
+])
+
+export const modelAdapter = new Map([
+  ['Erine-Speed-128K', erineSpeed128k],
 ])

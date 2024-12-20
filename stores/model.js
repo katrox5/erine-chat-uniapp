@@ -9,6 +9,7 @@ export const useModelStore = defineStore('model', () => {
   const modelData = ref({
     auth: {},
     options: {},
+    messages: [],
   })
   
   watch(currentModel, () =>
