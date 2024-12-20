@@ -3,7 +3,9 @@ import { defineStore } from 'pinia'
 
 export const useContentStore = defineStore('content', () => {
   const contents = ref([])
+  loadContents()
   
+  // custom
   const messages = computed(() =>
     contents.value.reduce((result, content) => {
       result.push({
@@ -33,12 +35,12 @@ export const useContentStore = defineStore('content', () => {
   }
   
   function clearContents() {
-    contens.value = []
+    contents.value = []
   }
   
+  // custom
   function loadContents() {
-    const messages = []
-    // TODO: read
+    const messages = uni.getStorageSync('messages') || []
     for (let i = 0; i < messages.length; i += 2) {
       const prompt = messages[i]
       const answer = messages[i + 1]
@@ -57,9 +59,10 @@ export const useContentStore = defineStore('content', () => {
     }
   }
   
-  watchEffect(() => {
-    // TODO: write
-  })
+  // watchEffect(() => uni.setStorage({
+  //   key: 'messages',
+  //   data: messages.value
+  // }))
   
   return {
     contents,
