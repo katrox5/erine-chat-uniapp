@@ -2,13 +2,13 @@
   <view>
     <template v-for="item in contents">
       <fui-card :margin="['8rpx', '32rpx']" :title="item?.prompt" tag="12/18 16:50">
-        <view class="fui-card__content">
+        <view class="card__content">
           <view v-if="item?.answer">
             {{ item.answer }}
           </view>
-          <view v-else class="fui-card__skeleton">
-            <view class="fui-card__skeleton-bar" style="width: 100%;" />
-            <view class="fui-card__skeleton-bar" style="width: 60%;" />
+          <view v-else class="card__skeleton">
+            <view class="card__skeleton-bar" style="width: 100%;" />
+            <view class="card__skeleton-bar" style="width: 60%;" />
           </view>
         </view>
       </fui-card>
@@ -26,17 +26,17 @@
 </script>
 
 <style scoped>
-  .fui-card__content {
+  .card__content {
     font-size: 28rpx;
     padding: 32rpx 20rpx;
     box-sizing: border-box;
   }
-  .fui-card__skeleton {
+  .card__skeleton {
     display: flex;
     flex-direction: column;
     row-gap: 16rpx;
   }
-  .fui-card__skeleton-bar {
+  .card__skeleton-bar {
     height: 32rpx;
     border-radius: 8rpx;
     background: linear-gradient(to right, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.15) 37%, rgba(0, 0, 0, 0.06) 63%);
