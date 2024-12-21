@@ -3,7 +3,7 @@
     <text class="header__title">{{ currentModel }}</text>
     <view class="header__btn-group">
       <image
-        class="header__btn header__clear-btn"
+        class="header__btn header__clear"
         src="/static/icons/clear.svg"
         @click="openPopup"
       />
@@ -79,7 +79,7 @@
     cursor: pointer;
     /* #endif */
   }
-  .header__clear-btn {
+  .header__clear {
     width: 44rpx;
     height: 44rpx;
   }

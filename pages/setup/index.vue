@@ -135,7 +135,7 @@
     display: block;
     margin-left: 16rpx;
     margin-bottom: 10rpx;
-    font-size: 20rpx;
+    font-size: 26rpx;
     color: dimgray;
   }
   .container__card {

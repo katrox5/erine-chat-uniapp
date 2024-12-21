@@ -16,20 +16,18 @@
   import { ref, inject } from 'vue'
   import { useContentStore } from '@/stores/content'
   import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea'
-  import { toastKey } from '@/constants'
 
   const contentStore = useContentStore()
   const { addPrompt } = contentStore
-
-  const toast = inject(toastKey)
 
   const prompt = ref('')
 
   function submit() {
     // TODO 生成中返回
     if (prompt.value === '') {
-      toast.value.show({
-        text: '问题不能为空',
+      uni.showToast({
+        title: '问题不能为空',
+        icon: 'none',
       })
       return
     }
