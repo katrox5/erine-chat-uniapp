@@ -12,22 +12,28 @@ export const useModelStore = defineStore('model', () => {
     messages: [],
   })
 
-  watch(
-    currentModel,
-    () => loadModelData(currentModel.value) || loadDefaultModelData(currentModel.value),
-  )
+  watch(currentModel, () => {
+    currentModel.value &&
+      uni.setStorage({
+        key: 'modelSelected',
+        data: currentModel.value,
+      })
+    // 加载模型(默认)数据
+    loadModelData(currentModel.value) || loadDefaultModelData(currentModel.value)
+  })
 
   watch(modelData, () => saveModelData(currentModel.value, modelData.value), {
     deep: true,
   })
-
-  loadModel()
-  function loadModel() {
+  ;(function () {
     // 读取已选的模型，若不存在则使用默认模型
     const model = uni.getStorageSync('modelSelected') || defaultModel
     currentModel.value = modelList.includes(model) ? model : defaultModel
-  }
+  })()
 
+  /**
+   * @param {String} modelName
+   */
   function loadDefaultModelData(modelName) {
     const auth = modelAuth.get(modelName)
     for (const item of auth) {
@@ -39,6 +45,9 @@ export const useModelStore = defineStore('model', () => {
     }
   }
 
+  /**
+   * @param {String} modelName
+   */
   function loadModelData(modelName) {
     let tempModelData = uni.getStorageSync(modelName)
     if (tempModelData) {
@@ -48,6 +57,10 @@ export const useModelStore = defineStore('model', () => {
     return false
   }
 
+  /**
+   * @param {String} modelName
+   * @param {Object} modelData
+   */
   function saveModelData(modelName, modelData) {
     uni.setStorage({
       key: modelName,

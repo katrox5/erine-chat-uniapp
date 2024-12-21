@@ -1,7 +1,7 @@
 let token = ''
 
 function getToken(apiKey, secretKey) {
-  return Promise((resolve) => {
+  return new Promise((resolve) => {
     const url =
       'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=%API_KEY%&client_secret=%SECRET_KEY%'
     uni.request({
@@ -14,24 +14,19 @@ function getToken(apiKey, secretKey) {
   })
 }
 
-async function request(body, auth) {
+async function request(auth, headers, messenger) {
   if (!token) {
     token = await getToken(auth.apiKey, auth.secretKey)
   }
-  uni.request({
+  const { messages, options } = headers
+  messenger?.send({
     url: `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-speed-128k?access_token=${token}`,
     method: 'POST',
-    enableChunked: true,
     body: JSON.stringify({
-      ...body,
       stream: true,
+      messages,
+      ...options,
     }),
-    success(res) {
-      console.log(res.data)
-    },
-    fail() {
-      console.log('fail')
-    },
   })
 }
 
@@ -55,5 +50,6 @@ function* readMessages(messages) {
 }
 
 export default {
+  request,
   readMessages,
 }

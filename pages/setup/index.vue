@@ -46,8 +46,8 @@
                   :min="item.range[0]"
                   :max="item.range[1]"
                   :step="item.range[2]"
-                  :value="modelData.options[item.key] * 100 - item.range[3]"
-                  @change="(e) => optionChange((e.detail.value + item.range[3]) / 100, item.key)"
+                  :value="modelData.options[item.key] * 100"
+                  @change="(e) => optionChange(e.detail.value / 100, item.key)"
                   style="margin: 8rpx 0; flex-grow: 1"
                   block-size="14"
                 />

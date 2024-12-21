@@ -31,6 +31,9 @@ export const useContentStore = defineStore('content', () => {
     { deep: true },
   )
 
+  /**
+   * @param {String} prompt
+   */
   function addPrompt(prompt) {
     const index = contents.value.length - 1
     if (!contents.value[index]?.answer) {
@@ -39,6 +42,10 @@ export const useContentStore = defineStore('content', () => {
     contents.value.push({ prompt })
   }
 
+  /**
+   * @param {String} answer
+   * @param {Number} index
+   */
   function setAnswer(answer, index) {
     contents.value[index].answer = answer
   }
