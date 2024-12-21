@@ -21,7 +21,8 @@
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
-  import { modelAdapter } from '../adapters'
+  import { modelAdapter } from '@/adapters'
+  import { useTypeWriter } from '@/utils/chat'
   import fuiCard from '@/components/firstui/fui-card/fui-card'
   import eventSource from '@/components/event-source/event-source'
   import uaMarkdown from '@/components/ua-markdown/ua-markdown'
@@ -45,7 +46,7 @@
   const { setAnswer } = contentStore
   const { currentModel, modelData } = storeToRefs(modelStore)
 
-  const output = ref('')
+  const { text: output, addText: addOutput, flush } = useTypeWriter()
   const loading = ref(false)
 
   watchEffect(() => {
@@ -63,10 +64,12 @@
     adapter.request(auth, headers, eventSourceRef.value)
   }
 
-  function handleResponse(resp) {
+  async function handleResponse(resp) {
     if (resp.event === 'message') {
-      output.value += JSON.parse(resp.data)?.result
+      const data = JSON.parse(resp.data)
+      data?.result && addOutput(data.result)
     } else if (resp.event === 'close') {
+      await flush()
       setAnswer(output.value, props.index)
     }
   }
