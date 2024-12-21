@@ -3,7 +3,7 @@
     <fui-card :margin="['8rpx', '32rpx']" :title="prompt" tag="12/18 16:50">
       <view class="card__content">
         <view v-if="output">
-          {{ output }}
+          <ua-markdown :source="output" />
         </view>
         <view v-else class="card__skeleton">
           <view class="card__skeleton-bar" style="width: 100%" />
@@ -23,7 +23,8 @@
   import { useModelStore } from '@/stores/model'
   import { modelAdapter } from '../adapters'
   import fuiCard from '@/components/firstui/fui-card/fui-card'
-  import eventSource from '@/uni_modules/event-source/components/event-source/index.vue'
+  import eventSource from '@/components/event-source/event-source'
+  import uaMarkdown from '@/components/ua-markdown/ua-markdown'
 
   const props = defineProps({
     prompt: {
@@ -63,9 +64,9 @@
   }
 
   function handleResponse(resp) {
-    if (resp.type === 'onmessage') {
+    if (resp.event === 'message') {
       output.value += JSON.parse(resp.data)?.result
-    } else if (resp.type === 'onclose') {
+    } else if (resp.event === 'close') {
       setAnswer(output.value, props.index)
     }
   }
@@ -75,7 +76,6 @@
   .card__content {
     font-size: 28rpx;
     padding: 32rpx 20rpx;
-    box-sizing: border-box;
   }
   .card__skeleton {
     display: flex;
