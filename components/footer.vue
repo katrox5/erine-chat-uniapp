@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-  import { ref, inject } from 'vue'
+  import { ref } from 'vue'
   import { useContentStore } from '@/stores/content'
   import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea'
 

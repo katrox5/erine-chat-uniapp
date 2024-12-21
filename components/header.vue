@@ -2,11 +2,7 @@
   <view class="header__container">
     <text class="header__title">{{ currentModel }}</text>
     <view class="header__btn-group">
-      <image
-        class="header__btn header__clear"
-        src="/static/icons/clear.svg"
-        @click="openPopup"
-      />
+      <image class="header__btn header__clear" src="/static/icons/clear.svg" @click="openPopup" />
       <image class="header__btn" src="/static/icons/setup.svg" @click="navigateToSetup" />
     </view>
     <view class="header__bottom-mask" />
