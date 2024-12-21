@@ -1,10 +1,10 @@
-import erineSpeed128k from './erine-speed-128k'
+import ernieSpeed128k from './ernie-speed-128k'
 
-export const modelList = ['Erine-Speed-128K']
+export const modelList = ['Ernie-Speed-128K']
 
 export const modelAuth = new Map([
   [
-    'Erine-Speed-128K',
+    'Ernie-Speed-128K',
     [
       {
         key: 'apiKey',
@@ -20,7 +20,7 @@ export const modelAuth = new Map([
 
 export const modelOptions = new Map([
   [
-    'Erine-Speed-128K',
+    'Ernie-Speed-128K',
     [
       {
         key: 'temperature',
@@ -40,4 +40,4 @@ export const modelOptions = new Map([
   ],
 ])
 
-export const modelAdapter = new Map([['Erine-Speed-128K', erineSpeed128k]])
+export const modelAdapter = new Map([['Ernie-Speed-128K', ernieSpeed128k]])
