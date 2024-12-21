@@ -26,7 +26,7 @@
 </script>
 
 <script module="eventSource" lang="renderjs">
-  import { fetchEventSource } from "../../node_modules/@microsoft/fetch-event-source"
+  import { fetchEventSource } from './lib/fetch-event-source/index'
 
   export default {
   	methods: {
@@ -36,10 +36,10 @@
         }
         const { url } = request;
         if (!url) {
-          return this.handleEmitData({
-            type: "warn",
-            msg: "URL cannot be empty.",
-          })
+          // #ifdef H5
+          console.log('[warn] URL cannot be empty.')
+          // #endif
+          return
         }
         this.handleSSE(request)
       },
@@ -50,25 +50,25 @@
         const that = this
         // 检查浏览器是否支持SSE
   			if (!('EventSource' in window)) {
-          return this.handleEmitData({
-            type: "warn",
-            msg: "The current device does not support EventSource.",
-          })
+          // #ifdef H5
+          console.log('[warn] The current device does not support EventSource.')
+          // #endif
+          return
         }
         const { url, ...headers } = request
         fetchEventSource(url, {
           ...headers,
           onopen() {
-            that.handleEmitData({ type: "onopen" })
+            that.handleEmitData({ event: 'open' })
           },
           onmessage(res) {
-            that.handleEmitData({ type: "onmessage", data: res.data })
+            that.handleEmitData({ event: 'message', data: res.data })
           },
           onclose() {
-            that.handleEmitData({ type: "onclose" })
+            that.handleEmitData({ event: 'close' })
           },
           onerror(error) {
-            that.handleEmitData({ type: "onerror", data: JSON.stringify(error) })
+            that.handleEmitData({ event: 'error', data: JSON.stringify(error) })
           }
         })
   		}
