@@ -80,6 +80,7 @@
     height: 44rpx;
   }
   .header__bottom-mask {
+    z-index: 12;
     position: absolute;
     width: 100%;
     height: 36rpx;
