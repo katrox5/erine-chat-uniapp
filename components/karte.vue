@@ -1,6 +1,6 @@
 <template>
   <view>
-    <fui-card :margin="['8rpx', '32rpx']" :title="prompt" tag="12/18 16:50">
+    <fui-card :margin="['8rpx', '32rpx']" :title="prompt">
       <view class="card__content">
         <view v-if="output">
           <ua-markdown :source="output" />

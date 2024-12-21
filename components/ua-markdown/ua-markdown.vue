@@ -1,4 +1,3 @@
-<!-- uniapp vue3 markdown解析 -->
 <template>
   <view class="ua__markdown"
     ><rich-text space="nbsp" :nodes="parseNodes(source)" @itemclick="handleItemClick"
@@ -8,51 +7,32 @@
 <script setup>
   import MarkdownIt from './lib/markdown-it.min.js'
   import hljs from './lib/highlight/uni-highlight.min.js'
-  import './lib/highlight/atom-one-dark.css'
-  import parseHtml from './lib/html-parser.js'
-  const props = defineProps({
-    // 解析内容
-    source: String,
-    showLine: { type: [Boolean, String], default: true },
-  })
+  import './lib/highlight/atom-one-light.css'
 
-  let copyCodeData = []
+  const props = defineProps({ source: String })
+
+  const copyCodeData = []
+
   const markdown = MarkdownIt({
     html: true,
-    highlight: function (str, lang) {
+    highlight: function(code, lang) {
       let preCode = ''
       try {
-        preCode = hljs.highlightAuto(str).value
-      } catch (err) {
-        preCode = markdown.utils.escapeHtml(str)
+        preCode = hljs.highlightAuto(code).value
+      } catch {
+        preCode = markdown.utils.escapeHtml(code)
       }
       const lines = preCode.split(/\n/).slice(0, -1)
       // 添加自定义行号
-      let html = lines
-        .map((item, index) => {
-          if (item == '') {
-            return ''
-          }
-          return (
-            '<li><span class="line-num" data-line="' + (index + 1) + '"></span>' + item + '</li>'
-          )
-        })
-        .join('')
-      if (props.showLine) {
-        html = '<ol style="padding: 0px 30px;">' + html + '</ol>'
-      } else {
-        html = '<ol style="padding: 0px 7px;list-style:none;">' + html + '</ol>'
-      }
-      copyCodeData.push(str)
-      let htmlCode = `<div class="markdown-wrap">`
-      // #ifndef MP-WEIXIN
-      htmlCode += `<div style="color: #aaa;text-align: right;font-size: 12px;padding:8px;">`
-      htmlCode += `${lang}<a class="copy-btn" code-data-index="${
-        copyCodeData.length - 1
-      }" style="margin-left: 8px;">复制代码</a>`
-      htmlCode += `</div>`
-      // #endif
-      htmlCode += `<pre class="hljs" style="padding:10px 8px 0;margin-bottom:5px;overflow: auto;display: block;border-radius: 5px;"><code>${html}</code></pre>`
+      const html = '<ol>' + lines.map(line =>  line ? '<li>' + line + '</li>' : '').join('') + '</ol>'
+
+      copyCodeData.push(code)
+
+      let htmlCode = '<div class="markdown-wrap">'
+      htmlCode += '<div style="color:#aaa;text-align:right;font-size:12px;padding:2px;">'
+      htmlCode += `${lang}<a id="copy-btn" style="margin-left:8px;" code-data-index="${copyCodeData.length-1}">复制代码</a>`
+      htmlCode += '</div>'
+      htmlCode += `<pre class="hljs" style="padding:10px 8px 0;overflow:auto;display:block;border-radius:5px;"><code>${html}</code></pre>`
       htmlCode += '</div>'
       return htmlCode
     },
@@ -72,28 +52,15 @@
     } else {
       htmlString = markdown.render(value)
     }
-    // 解决小程序表格边框型失效问题
-    htmlString = htmlString.replace(/<table/g, `<table class="table"`)
-    htmlString = htmlString.replace(/<tr/g, `<tr class="tr"`)
-    htmlString = htmlString.replace(/<th>/g, `<th class="th">`)
-    htmlString = htmlString.replace(/<td/g, `<td class="td"`)
-    htmlString = htmlString.replace(/<hr>|<hr\/>|<hr \/>/g, `<hr class="hr">`)
 
-    // #ifndef APP-NVUE
     return htmlString
-    // #endif
-
-    // 将htmlString转成htmlArray，反之使用rich-text解析
-    // #ifdef APP-NVUE
-    return parseHtml(htmlString)
-    // #endif
   }
 
   // 复制代码
   const handleItemClick = (e) => {
     let { attrs } = e.detail.node
-    let { 'code-data-index': codeDataIndex, class: className } = attrs
-    if (className == 'copy-btn') {
+    let { 'code-data-index': codeDataIndex, id } = attrs
+    if (id === 'copy-btn') {
       uni.setClipboardData({
         data: copyCodeData[codeDataIndex],
         showToast: false,
@@ -110,7 +77,7 @@
 
 <style lang="scss" scoped>
   .ua__markdown {
-    font-size: 14px;
+    font-size: 26rpx;
     line-height: 1.5;
     word-break: break-all;
     h1,
@@ -120,45 +87,44 @@
     h5,
     h6 {
       font-family: inherit;
-      font-weight: 500;
-      line-height: 1.1;
+      font-weight: bold;
       color: inherit;
     }
     h1,
     h2,
     h3 {
-      margin-top: 20px;
-      margin-bottom: 10px;
+      margin-top: 20rpx;
+      margin-bottom: 10rpx;
     }
     h4,
     h5,
     h6 {
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 10rpx;
+      margin-bottom: 10rpx;
     }
     .h1,
     h1 {
-      font-size: 36px;
+      font-size: 38rpx;
     }
     .h2,
     h2 {
-      font-size: 30px;
+      font-size: 34rpx;
     }
     .h3,
     h3 {
-      font-size: 24px;
+      font-size: 30rpx;
     }
     .h4,
     h4 {
-      font-size: 18px;
+      font-size: 26rpx;
     }
     .h5,
     h5 {
-      font-size: 14px;
+      font-size: 22rpx;
     }
     .h6,
     h6 {
-      font-size: 12px;
+      font-size: 18rpx;
     }
     a {
       background-color: transparent;
@@ -176,7 +142,7 @@
       max-width: 35%;
     }
     p {
-      margin: 0 0 10px;
+      margin-bottom: 10rpx;
     }
     em {
       font-style: italic;
@@ -184,9 +150,8 @@
     }
     ol,
     ul {
-      margin-top: 0;
-      margin-bottom: 10px;
-      padding-left: 40px;
+      margin-bottom: 20rpx;
+      padding-left: 64rpx;
     }
     ol ol,
     ol ul,
@@ -264,10 +229,6 @@
       color: inherit;
       background-color: inherit;
       border-radius: 0;
-    }
-    .code-block-header__copy {
-      font-size: 16px;
-      margin-left: 5px;
     }
     abbr[data-original-title],
     abbr[title] {
