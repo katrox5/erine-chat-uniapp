@@ -11,21 +11,31 @@
         </view>
       </view>
     </fui-card>
-    <!-- SSE组件 -->
+    <!-- 异步SSE组件 -->
     <event-source ref="eventSourceRef" @response="handleResponse" />
   </view>
 </template>
 
 <script setup>
-  import { ref, watchEffect } from 'vue'
+  import { defineAsyncComponent, onMounted, ref, watch } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
   import { modelAdapter } from '@/adapters'
   import { useTypeWriter } from '@/utils/chat'
   import fuiCard from '@/components/firstui/fui-card/fui-card'
-  import eventSource from '@/components/event-source/event-source'
   import uaMarkdown from '@/components/ua-markdown/ua-markdown'
+
+  const isEventSourceActive = ref(false)
+  const eventSourceRef = ref(null)
+
+  // 发请求时再加载SSE组件
+  const eventSource = defineAsyncComponent(() => {
+    return new Promise(async (resolveComp) => {
+      await new Promise((resolve) => watch(isEventSourceActive, resolve, { once: true }))
+      resolveComp(import('@/components/event-source/event-source'))
+    })
+  })
 
   const props = defineProps({
     prompt: {
@@ -39,8 +49,6 @@
     answer: String,
   })
 
-  const eventSourceRef = ref(null)
-
   const modelStore = useModelStore()
   const contentStore = useContentStore()
   const { setAnswer } = contentStore
@@ -49,7 +57,7 @@
   const { text: output, addText: addOutput, flush } = useTypeWriter()
   const loading = ref(false)
 
-  watchEffect(() => {
+  onMounted(() => {
     if (props.answer) {
       output.value = props.answer
       loading.value = false
@@ -59,17 +67,25 @@
   })
 
   function sendRequest() {
-    const { auth, ...headers } = modelData.value
-    const adapter = modelAdapter.get(currentModel.value)
-    adapter.request(auth, headers, eventSourceRef.value)
+    isEventSourceActive.value = true
+    watch(
+      eventSourceRef,
+      () => {
+        const { auth, ...headers } = modelData.value
+        const adapter = modelAdapter.get(currentModel.value)
+        adapter.request(auth, headers, eventSourceRef.value)
+      },
+      { once: true },
+    )
   }
 
   async function handleResponse(resp) {
     if (resp.event === 'message') {
       const data = JSON.parse(resp.data)
-      data?.result && addOutput(data.result)
+      // data?.result && addOutput(data.result)
+      output.value += data?.result
     } else if (resp.event === 'close') {
-      await flush()
+      // await flush()
       setAnswer(output.value, props.index)
     }
   }
