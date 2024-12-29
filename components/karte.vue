@@ -1,19 +1,16 @@
 <template>
-  <view>
-    <fui-card :margin="['8rpx', '32rpx']" :title="prompt">
-      <view class="card__content">
-        <view v-if="output">
-          <ua-markdown :source="output" />
-        </view>
-        <view v-else class="card__skeleton">
-          <view class="card__skeleton-bar" style="width: 100%" />
-          <view class="card__skeleton-bar" style="width: 60%" />
-        </view>
-      </view>
-    </fui-card>
-    <!-- 异步SSE组件 -->
-    <event-source ref="eventSourceRef" @response="handleResponse" />
+  <view class="card__container">
+    <view class="card__header">
+      <text class="card__label">Q</text>
+      <text class="card__title">{{ prompt }}</text>
+    </view>
+    <view class="card__content">
+      <text class="card__label">A</text>
+      <ua-markdown :source="output" />
+    </view>
   </view>
+  <!-- 异步SSE组件 -->
+  <event-source ref="eventSourceRef" @response="handleResponse" />
 </template>
 
 <script setup>
@@ -22,8 +19,6 @@
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
   import { modelAdapter } from '@/adapters'
-  import { useTypeWriter } from '@/utils/chat'
-  import fuiCard from '@/components/firstui/fui-card/fui-card'
   import uaMarkdown from '@/components/ua-markdown/ua-markdown'
 
   const isEventSourceActive = ref(false)
@@ -54,7 +49,7 @@
   const { setAnswer } = contentStore
   const { currentModel, modelData } = storeToRefs(modelStore)
 
-  const { text: output, addText: addOutput, flush } = useTypeWriter()
+  const output = ref('')
   const loading = ref(false)
 
   onMounted(() => {
@@ -82,43 +77,39 @@
   async function handleResponse(resp) {
     if (resp.event === 'message') {
       const data = JSON.parse(resp.data)
-      // data?.result && addOutput(data.result)
       output.value += data?.result
     } else if (resp.event === 'close') {
-      // await flush()
       setAnswer(output.value, props.index)
     }
   }
 </script>
 
 <style scoped>
-  .card__content {
-    font-size: 28rpx;
+  .card__container {
+    margin: 8rpx 32rpx;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: rgb(2 4 38 / 5%) 0 0.0625rem 0.125rem 0;
+  }
+  .card__header {
+    position: relative;
     padding: 32rpx 20rpx;
+    border-bottom: #eee solid 1px;
   }
-  .card__skeleton {
-    display: flex;
-    flex-direction: column;
-    row-gap: 16rpx;
+  .card__label {
+    position: absolute;
+    inset: 0 5rpx;
+    font-size: 8rpx;
+    font-weight: bold;
+    opacity: 0.06;
   }
-  .card__skeleton-bar {
-    height: 32rpx;
-    border-radius: 8rpx;
-    background: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.06) 25%,
-      rgba(0, 0, 0, 0.15) 37%,
-      rgba(0, 0, 0, 0.06) 63%
-    );
-    background-size: 400% 100%;
-    animation: skeleton-loading 1.4s ease infinite;
+  .card__title {
+    font-size: 24rpx;
+    color: #555;
   }
-  @keyframes skeleton-loading {
-    0% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0 50%;
-    }
+  .card__content {
+    position: relative;
+    padding: 32rpx 20rpx;
+    font-size: 28rpx;
   }
 </style>
