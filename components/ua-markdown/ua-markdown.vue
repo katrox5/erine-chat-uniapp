@@ -7,7 +7,7 @@
 <script setup>
   import MarkdownIt from './lib/markdown-it.min.js'
   import hljs from './lib/highlight/uni-highlight.min.js'
-  import './lib/highlight/atom-one-light.css'
+  import './lib/highlight/atom-one-dark.css'
 
   const props = defineProps({ source: String })
 
@@ -23,8 +23,7 @@
         preCode = markdown.utils.escapeHtml(code)
       }
       const lines = preCode.split(/\n/).slice(0, -1)
-      // 添加自定义行号
-      const html = '<ol>' + lines.map(line =>  line ? '<li>' + line + '</li>' : '').join('') + '</ol>'
+      const html = lines.map(line =>  line ? '<div>' + line + '</div>' : '').join('')
 
       copyCodeData.push(code)
 
