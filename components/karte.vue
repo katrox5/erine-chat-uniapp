@@ -6,31 +6,24 @@
     </view>
     <view class="card__content">
       <text class="card__label">A</text>
-      <ua-markdown :source="output" />
+      <markdown :source="output" />
     </view>
   </view>
-  <!-- 异步SSE组件 -->
-  <event-source ref="eventSourceRef" @response="handleResponse" />
+  <!-- SSE组件 -->
+  <event-source v-if="isEventSourceActive" ref="eventSourceRef" @response="handleResponse" />
 </template>
 
 <script setup>
-  import { defineAsyncComponent, onMounted, ref, watch } from 'vue'
+  import { onMounted, ref } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
   import { modelAdapter } from '@/adapters'
-  import uaMarkdown from '@/components/ua-markdown/ua-markdown'
+  import markdown from '@/components/markdown/markdown'
+  import eventSource from '@/components/event-source/event-source'
 
-  const isEventSourceActive = ref(false)
+  const isEventSourceActive = ref(true)
   const eventSourceRef = ref(null)
-
-  // 发请求时再加载SSE组件
-  const eventSource = defineAsyncComponent(() => {
-    return new Promise(async (resolveComp) => {
-      await new Promise((resolve) => watch(isEventSourceActive, resolve, { once: true }))
-      resolveComp(import('@/components/event-source/event-source'))
-    })
-  })
 
   const props = defineProps({
     prompt: {
@@ -62,16 +55,9 @@
   })
 
   function sendRequest() {
-    isEventSourceActive.value = true
-    watch(
-      eventSourceRef,
-      () => {
-        const { auth, ...headers } = modelData.value
-        const adapter = modelAdapter.get(currentModel.value)
-        adapter.request(auth, headers, eventSourceRef.value)
-      },
-      { once: true },
-    )
+    const { auth, ...headers } = modelData.value
+    const adapter = modelAdapter.get(currentModel.value)
+    adapter.request(auth, headers, eventSourceRef.value)
   }
 
   async function handleResponse(resp) {
@@ -99,12 +85,14 @@
   .card__label {
     position: absolute;
     inset: 0 5rpx;
-    font-size: 8rpx;
+    font-size: 36rpx;
+    font-style: italic;
+    font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
     opacity: 0.06;
   }
   .card__title {
-    font-size: 24rpx;
+    font-size: 28rpx;
     color: #555;
   }
   .card__content {
