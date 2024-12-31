@@ -6,15 +6,15 @@
     </view>
     <view class="card__content">
       <text class="card__label">A</text>
-      <markdown :source="output" />
+      <markdown :is-loading="isLoading" :source="output" />
     </view>
   </view>
-  <!-- SSE组件 -->
-  <event-source v-if="isEventSourceActive" ref="eventSourceRef" @response="handleResponse" />
+  <!-- SSE组件 为最新对话时启用，否则卸载 -->
+  <event-source v-if="isLatest" ref="eventSourceRef" @response="handleResponse" />
 </template>
 
 <script setup>
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, computed } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
@@ -22,7 +22,6 @@
   import markdown from '@/components/markdown/markdown'
   import eventSource from '@/components/event-source/event-source'
 
-  const isEventSourceActive = ref(true)
   const eventSourceRef = ref(null)
 
   const props = defineProps({
@@ -40,19 +39,14 @@
   const modelStore = useModelStore()
   const contentStore = useContentStore()
   const { setAnswer } = contentStore
+  const { contents, isFetching } = storeToRefs(contentStore)
   const { currentModel, modelData } = storeToRefs(modelStore)
 
   const output = ref('')
-  const loading = ref(false)
+  const isLatest = computed(() => contents.value.length - 1 === props.index)
+  const isLoading = computed(() => isLatest.value && isFetching.value)
 
-  onMounted(() => {
-    if (props.answer) {
-      output.value = props.answer
-      loading.value = false
-      return
-    }
-    sendRequest()
-  })
+  onMounted(() => (props.answer ? (output.value = props.answer) : sendRequest()))
 
   function sendRequest() {
     const { auth, ...headers } = modelData.value
@@ -61,11 +55,19 @@
   }
 
   async function handleResponse(resp) {
-    if (resp.event === 'message') {
-      const data = JSON.parse(resp.data)
-      output.value += data?.result
-    } else if (resp.event === 'close') {
-      setAnswer(output.value, props.index)
+    switch (resp.event) {
+      case 'open':
+        isFetching.value = true
+        break
+      case 'message':
+        const data = JSON.parse(resp.data)
+        output.value += data?.result
+        break
+      case 'close':
+        setAnswer(output.value, props.index)
+      case 'error':
+        isFetching.value = false
+        break
     }
   }
 </script>

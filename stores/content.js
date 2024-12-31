@@ -7,6 +7,7 @@ export const useContentStore = defineStore('content', () => {
   const modelStore = useModelStore()
   const { currentModel, modelData } = storeToRefs(modelStore)
 
+  const isFetching = ref(false)
   const contents = ref([])
 
   watch(modelData, loadContents, { once: true })
@@ -64,6 +65,7 @@ export const useContentStore = defineStore('content', () => {
 
   return {
     contents,
+    isFetching,
     addPrompt,
     setAnswer,
     clearContents,
