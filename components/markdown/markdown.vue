@@ -1,6 +1,7 @@
 <template>
-  <view>
+  <view style="position: relative; min-height: 1rem;">
     <rich-text space="nbsp" :nodes="parseNodes(source)" />
+    <view v-if="isLoading" class="cursor"> &nbsp; </view>
   </view>
 </template>
 
@@ -9,7 +10,10 @@
   import hljs from './lib/highlight/uni-highlight.min.js'
   import './lib/highlight/atom-one-dark.css'
 
-  const props = defineProps({ source: String })
+  const props = defineProps({
+    source: String,
+    isLoading: Boolean,
+  })
 
   const markdown = MarkdownIt({
     html: true,
@@ -49,3 +53,23 @@
     return htmlString
   }
 </script>
+
+<style scoped>
+  @keyframes blink-cursor {
+    from,
+    to {
+      border-color: transparent;
+    }
+    50% {
+      border-color: #fff;
+    }
+  }
+  .cursor {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border-right: 0.35rem solid;
+    animation: blink-cursor 1s step-end infinite;
+    mix-blend-mode: difference;
+  }
+</style>
