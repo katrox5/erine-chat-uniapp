@@ -10,27 +10,45 @@ export const useContentStore = defineStore('content', () => {
   const isFetching = ref(false)
   const contents = ref([])
 
-  watch(modelData, loadContents, { once: true })
+  let stopWatch
 
   watch(
-    contents,
+    modelData,
     () => {
-      modelData.value.messages = contents.value.reduce((result, content) => {
-        result.push({
-          role: 'user',
-          content: content.prompt,
-        })
-        if (content.answer) {
-          result.push({
-            role: 'assistant',
-            content: content.answer,
-          })
-        }
-        return result
-      }, [])
+      watch(
+        currentModel,
+        () => {
+          stopWatch?.()
+          loadContents()
+          startWatch()
+        },
+        { immediate: true },
+      )
     },
-    { deep: true },
+    { once: true },
   )
+
+  function startWatch() {
+    stopWatch = watch(
+      contents,
+      () => {
+        modelData.value.messages = contents.value.reduce((result, content) => {
+          result.push({
+            role: 'user',
+            content: content.prompt,
+          })
+          if (content.answer) {
+            result.push({
+              role: 'assistant',
+              content: content.answer,
+            })
+          }
+          return result
+        }, [])
+      },
+      { deep: true },
+    )
+  }
 
   /**
    * @param {String} prompt
@@ -58,6 +76,7 @@ export const useContentStore = defineStore('content', () => {
   function loadContents() {
     const adpater = modelAdapter.get(currentModel.value)
     const items = adpater.readMessages(modelData.value.messages)
+    clearContents()
     for (const item of items) {
       contents.value.push(item)
     }
