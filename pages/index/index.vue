@@ -21,6 +21,6 @@
   }
   .view__main {
     flex: 1 1 0%;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 </style>
