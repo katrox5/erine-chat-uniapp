@@ -1,5 +1,5 @@
 <template>
-  <view class="card__container">
+  <view class="card__container" :style="{ animationDelay: `${index * 0.15}s` }">
     <view class="card__header">
       <text class="card__label">Q</text>
       <text class="card__title">{{ prompt }}</text>
@@ -94,6 +94,8 @@
     background-color: #fff;
     border-radius: 0.5rem;
     box-shadow: rgb(2 4 38 / 5%) 0 0.0625rem 0.125rem 0;
+    animation: slideUp 0.3s ease-out forwards;
+    opacity: 0;
   }
   %card__padding {
     position: relative;
@@ -129,6 +131,16 @@
     background-color: $bg-color;
     &:active {
       background-color: lighten($bg-color, 3%);
+    }
+  }
+  @keyframes slideUp {
+    from {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
 </style>
