@@ -24,7 +24,7 @@ async function request(auth, headers, messenger) {
     method: 'POST',
     body: JSON.stringify({
       stream: true,
-      messages,
+      messages: messages.length % 2 ? messages : messages.slice(0, -1),
       ...options,
     }),
   })
