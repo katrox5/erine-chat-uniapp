@@ -8,6 +8,7 @@
         @click="reload"
         class="card__reload"
         name="refresh"
+        color="#666"
         font-weight="bold"
         :size="32"
       />

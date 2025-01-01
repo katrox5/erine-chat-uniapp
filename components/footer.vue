@@ -8,7 +8,7 @@
       placeholder="请输入问题"
       :padding="['24rpx', '56rpx', '24rpx', '24rpx']"
     />
-    <image @click="submit" class="footer__btn" src="/static/icons/send.svg" />
+    <image @click="submit" class="footer__send" src="/static/icons/send.svg" />
   </view>
 </template>
 
@@ -36,29 +36,27 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .footer__container {
     position: relative;
   }
   .footer__top-mask {
-    z-index: 12;
     position: absolute;
+    inset: -36rpx 0;
     width: 100%;
     height: 36rpx;
-    top: -36rpx;
-    left: 0;
     background-image: linear-gradient(to bottom, transparent, #f3f3f3);
+    z-index: 1;
   }
-  .footer__btn {
+  .footer__send {
+    position: absolute;
+    inset: 50% 10rpx auto auto;
     width: 48rpx;
     height: 48rpx;
-    border-radius: 25%;
-    position: absolute;
-    right: 10rpx;
-    top: 50%;
+    border-radius: 8rpx;
     transform: translateY(-50%);
-  }
-  .footer__btn:active {
-    background-color: lightgray;
+    &:active {
+      background-color: #f3f3f3;
+    }
   }
 </style>

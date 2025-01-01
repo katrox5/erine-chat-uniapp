@@ -1,5 +1,5 @@
 <template>
-  <view style="position: relative; min-height: 1rem;">
+  <view style="position: relative; min-height: 1rem">
     <rich-text space="nbsp" :nodes="parseNodes(source)" />
     <view v-if="isLoading" class="cursor"> &nbsp; </view>
   </view>
@@ -55,7 +55,7 @@
 </script>
 
 <style scoped>
-  @keyframes blink-cursor {
+  @keyframes blinking-cursor {
     from,
     to {
       border-color: transparent;
@@ -66,10 +66,9 @@
   }
   .cursor {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    inset: auto 0 0 auto;
     border-right: 0.35rem solid;
-    animation: blink-cursor 1s step-end infinite;
+    animation: blinking-cursor 1s step-end infinite;
     mix-blend-mode: difference;
   }
 </style>
