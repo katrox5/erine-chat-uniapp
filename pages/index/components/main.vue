@@ -54,7 +54,7 @@
   @mixin mask($dir) {
     position: absolute;
     width: 100%;
-    height: 24rpx;
+    height: 16rpx;
     background-image: linear-gradient(to $dir, transparent, #f3f3f3);
     z-index: 1;
   }

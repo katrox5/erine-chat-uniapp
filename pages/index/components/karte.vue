@@ -96,6 +96,12 @@
     box-shadow: #0204260d 0 0.0625rem 0.125rem 0;
     animation: slideUp 0.3s ease-out forwards;
     opacity: 0;
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
   %card__padding {
     position: relative;
