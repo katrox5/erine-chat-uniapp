@@ -6,18 +6,13 @@ export const useModelStore = defineStore('model', () => {
   const defaultModel = modelList[0]
 
   const currentModel = ref()
-  const modelData = ref({
-    auth: {},
-    options: {},
-    messages: [],
-  })
+  const modelData = ref()
 
   watch(currentModel, () => {
-    currentModel.value &&
-      uni.setStorage({
-        key: 'modelSelected',
-        data: currentModel.value,
-      })
+    uni.setStorage({
+      key: 'modelSelected',
+      data: currentModel.value,
+    })
     // 加载模型(默认)数据
     loadModelData(currentModel.value) || loadDefaultModelData(currentModel.value)
   })
@@ -35,26 +30,29 @@ export const useModelStore = defineStore('model', () => {
    * @param {String} modelName
    */
   function loadDefaultModelData(modelName) {
+    const tempModelData = {
+      auth: {},
+      options: {},
+      messages: [],
+    }
     const auth = modelAuth.get(modelName)
     for (const item of auth) {
-      modelData.value.auth[item.key] = ''
+      tempModelData.auth[item.key] = ''
     }
     const options = modelOptions.get(modelName)
     for (const item of options) {
-      modelData.value.options[item.key] = item.default
+      tempModelData.options[item.key] = item.default
     }
+    modelData.value = tempModelData
   }
 
   /**
    * @param {String} modelName
+   * @returns {Boolean} 是否加载成功
    */
   function loadModelData(modelName) {
-    let tempModelData = uni.getStorageSync(modelName)
-    if (tempModelData) {
-      modelData.value = tempModelData
-      return true
-    }
-    return false
+    const tempModelData = uni.getStorageSync(modelName)
+    return tempModelData ? !!(modelData.value = tempModelData) : false
   }
 
   /**

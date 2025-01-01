@@ -13,19 +13,16 @@ export const useContentStore = defineStore('content', () => {
   let stopWatch
 
   watch(
-    modelData,
+    currentModel,
     () => {
-      watch(
-        currentModel,
-        () => {
-          stopWatch?.()
-          loadContents()
-          startWatch()
-        },
-        { immediate: true },
-      )
+      // 等待 modelData 载入完毕
+      watch(modelData, () => {
+        stopWatch?.()
+        loadContents()
+        startWatch()
+      })
     },
-    { once: true },
+    { immediate: true },
   )
 
   function startWatch() {
@@ -77,9 +74,7 @@ export const useContentStore = defineStore('content', () => {
     const adpater = modelAdapter.get(currentModel.value)
     const items = adpater.readMessages(modelData.value.messages)
     clearContents()
-    for (const item of items) {
-      contents.value.push(item)
-    }
+    contents.value.push(...items)
   }
 
   return {
