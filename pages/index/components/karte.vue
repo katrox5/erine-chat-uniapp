@@ -70,6 +70,7 @@
   }
 
   async function handleResponse(resp) {
+    // FIXME isFetching 设置的时机不对
     switch (resp.event) {
       case 'open':
         isFetching.value = true

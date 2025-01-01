@@ -10,7 +10,7 @@
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
-  import Karte from '@/components/karte'
+  import Karte from './karte'
 
   const contentStore = useContentStore()
   const modelStore = useModelStore()
