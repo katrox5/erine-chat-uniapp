@@ -93,7 +93,7 @@
     margin: 8rpx 32rpx;
     background-color: #fff;
     border-radius: 0.5rem;
-    box-shadow: rgb(2 4 38 / 5%) 0 0.0625rem 0.125rem 0;
+    box-shadow: #0204260d 0 0.0625rem 0.125rem 0;
     animation: slideUp 0.3s ease-out forwards;
     opacity: 0;
   }

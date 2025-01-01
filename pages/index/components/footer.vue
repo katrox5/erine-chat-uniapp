@@ -50,9 +50,9 @@
   }
   .footer__top-mask {
     position: absolute;
-    inset: -36rpx 0;
+    inset: -24rpx 0;
     width: 100%;
-    height: 36rpx;
+    height: 24rpx;
     background-image: linear-gradient(to bottom, transparent, #f3f3f3);
     z-index: 1;
   }

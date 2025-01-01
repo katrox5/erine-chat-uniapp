@@ -76,9 +76,9 @@
   }
   .header__bottom-mask {
     position: absolute;
-    inset: auto 0 -36rpx;
+    inset: auto 0 -24rpx;
     width: 100%;
-    height: 36rpx;
+    height: 24rpx;
     background-image: linear-gradient(to top, transparent, #f3f3f3);
     z-index: 1;
   }
