@@ -1,14 +1,7 @@
 <template>
   <view style="position: relative">
     <view class="main__top-mask" />
-    <scroll-view
-      style="height: 100%"
-      scroll-y
-      scroll-with-animation
-      :scroll-top="scrollTop"
-      :upper-threshold="20"
-      @scrolltoupper="interruptAutoScroll"
-    >
+    <scroll-view style="height: 100%" scroll-y scroll-with-animation :scroll-top="scrollTop">
       <template v-for="({ prompt, answer }, index) in contents" :key="currentModel + index">
         <karte :prompt="prompt" :answer="answer" :index="index" />
       </template>
@@ -18,29 +11,42 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue'
+  import { onMounted, ref, watch } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
+  import { useWaveNumber } from '@/utils/math'
   import Karte from './karte'
 
   const contentStore = useContentStore()
   const modelStore = useModelStore()
-  const { contents } = storeToRefs(contentStore)
+  const { contents, isFetching } = storeToRefs(contentStore)
   const { currentModel } = storeToRefs(modelStore)
 
   const scrollTop = ref(0)
 
   onMounted(() =>
-    // 首次加载时，滚动到底部
-    setTimeout(
-      () => (scrollTop.value = Number.MAX_SAFE_INTEGER),
-      (contents.value.length - 1) * 150,
-    ),
+    // 入场时滚动到底部
+    setTimeout(scrollToBottom, (contents.value.length - 1) * 150),
   )
-  
-  const interruptAutoScroll = () => {
-    console.log('interrupt')
+
+  let timer
+
+  watch(isFetching, () => {
+    if (isFetching.value) {
+      timer = setInterval(scrollToBottom, 500)
+    } else {
+      setTimeout(() => clearInterval(timer), 500)
+    }
+  })
+
+  const waveNumber = useWaveNumber()
+
+  function scrollToBottom() {
+    // 手动滚动视图不会更新 scrollTop
+    // 且 scrollTop 赋同一值时不会触发滚动
+    // 故此处附加一波动值 waveNumber
+    scrollTop.value = Number.MAX_SAFE_INTEGER + waveNumber()
   }
 </script>
 
