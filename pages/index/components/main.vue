@@ -1,10 +1,19 @@
 <template>
-  <view>
-    <scroll-view scroll-y scroll-with-animation :scroll-top="scrollTop" id="main__container">
+  <view style="position: relative">
+    <view class="main__top-mask" />
+    <scroll-view
+      style="height: 100%"
+      scroll-y
+      scroll-with-animation
+      :scroll-top="scrollTop"
+      :upper-threshold="20"
+      @scrolltoupper="interruptAutoScroll"
+    >
       <template v-for="({ prompt, answer }, index) in contents" :key="currentModel + index">
         <karte :prompt="prompt" :answer="answer" :index="index" />
       </template>
     </scroll-view>
+    <view class="main__bottom-mask" />
   </view>
 </template>
 
@@ -29,10 +38,25 @@
       (contents.value.length - 1) * 150,
     ),
   )
+  
+  const interruptAutoScroll = () => {
+    console.log('interrupt')
+  }
 </script>
 
-<style scoped>
-  #main__container {
-    height: 100%;
+<style lang="scss" scoped>
+  @mixin mask($dir) {
+    position: absolute;
+    width: 100%;
+    height: 24rpx;
+    background-image: linear-gradient(to $dir, transparent, #f3f3f3);
+    z-index: 1;
+  }
+  .main__top-mask {
+    @include mask(top);
+  }
+  .main__bottom-mask {
+    @include mask(bottom);
+    bottom: 0;
   }
 </style>

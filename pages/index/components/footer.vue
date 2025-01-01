@@ -1,6 +1,5 @@
 <template>
-  <view class="footer__container">
-    <view class="footer__top-mask" />
+  <view style="position: relative">
     <fui-textarea
       v-model="prompt"
       maxlength="-1"
@@ -45,17 +44,6 @@
 </script>
 
 <style lang="scss" scoped>
-  .footer__container {
-    position: relative;
-  }
-  .footer__top-mask {
-    position: absolute;
-    inset: -24rpx 0;
-    width: 100%;
-    height: 24rpx;
-    background-image: linear-gradient(to bottom, transparent, #f3f3f3);
-    z-index: 1;
-  }
   .footer__send {
     position: absolute;
     inset: 50% 10rpx auto auto;

@@ -11,7 +11,6 @@
       />
       <fui-icon name="setup" size="48" @click="navigateToSetup" />
     </view>
-    <view class="header__bottom-mask" />
   </view>
   <fui-top-popup :show="popupVisible" @close="closePopup">
     <view class="popup__container">
@@ -73,14 +72,6 @@
   .header__btn-group {
     display: flex;
     column-gap: 12rpx;
-  }
-  .header__bottom-mask {
-    position: absolute;
-    inset: auto 0 -24rpx;
-    width: 100%;
-    height: 24rpx;
-    background-image: linear-gradient(to top, transparent, #f3f3f3);
-    z-index: 1;
   }
   .popup__container {
     margin-top: var(--status-bar-height);
