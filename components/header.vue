@@ -2,8 +2,14 @@
   <view class="header__container">
     <text class="header__title">{{ currentModel }}</text>
     <view class="header__btn-group">
-      <image class="header__clear" src="/static/icons/clear.svg" @click="openPopup" />
-      <image class="header__setup" src="/static/icons/setup.svg" @click="navigateToSetup" />
+      <fui-icon
+        custom-prefix="custom-icon"
+        name="icon-clear"
+        size="48"
+        color="#1677ff"
+        @click="openPopup"
+      />
+      <fui-icon name="setup" size="48" @click="navigateToSetup" />
     </view>
     <view class="header__bottom-mask" />
   </view>
@@ -23,6 +29,7 @@
   import { storeToRefs } from 'pinia'
   import { useModelStore } from '@/stores/model'
   import { useContentStore } from '@/stores/content'
+  import fuiIcon from '@/components/firstui/fui-icon/fui-icon.vue'
   import fuiTopPopup from '@/components/firstui/fui-top-popup/fui-top-popup'
 
   const modelStore = useModelStore()
@@ -65,17 +72,7 @@
   }
   .header__btn-group {
     display: flex;
-    column-gap: 16rpx;
-  }
-  .header__clear {
-    width: 44rpx;
-    height: 44rpx;
-    cursor: pointer;
-  }
-  .header__setup {
-    width: 40rpx;
-    height: 40rpx;
-    cursor: pointer;
+    column-gap: 12rpx;
   }
   .header__bottom-mask {
     position: absolute;

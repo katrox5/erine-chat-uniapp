@@ -8,7 +8,14 @@
       placeholder="请输入问题"
       :padding="['24rpx', '56rpx', '24rpx', '24rpx']"
     />
-    <image @click="submit" class="footer__send" src="/static/icons/send.svg" />
+    <fui-icon
+      custom-prefix="custom-icon"
+      name="icon-send"
+      size="36"
+      color="dimgray"
+      class="footer__send"
+      @click="submit"
+    />
   </view>
 </template>
 
@@ -16,6 +23,7 @@
   import { ref } from 'vue'
   import { useContentStore } from '@/stores/content'
   import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea'
+  import fuiIcon from '@/components/firstui/fui-icon/fui-icon.vue'
 
   const contentStore = useContentStore()
   const { addPrompt } = contentStore
@@ -51,8 +59,7 @@
   .footer__send {
     position: absolute;
     inset: 50% 10rpx auto auto;
-    width: 48rpx;
-    height: 48rpx;
+    padding: 8rpx;
     border-radius: 8rpx;
     transform: translateY(-50%);
     &:active {
