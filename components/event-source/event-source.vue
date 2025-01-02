@@ -31,30 +31,15 @@
   export default {
   	methods: {
       handleRequest(request = {}) {
-        if (!Object.keys(request).length) {
-          return
+        if (Object.keys(request).length) {
+          this.handleSSE(request)
         }
-        const { url } = request;
-        if (!url) {
-          // #ifdef H5
-          console.log('[warn] URL cannot be empty.')
-          // #endif
-          return
-        }
-        this.handleSSE(request)
       },
   		handleEmitData(data = {}) {
   			this.$ownerInstance.callMethod('emits', data);
   		},
   		handleSSE(request = {}) {
         const that = this
-        // 检查浏览器是否支持SSE
-  			if (!('EventSource' in window)) {
-          // #ifdef H5
-          console.log('[warn] The current device does not support EventSource.')
-          // #endif
-          return
-        }
         const { url, ...headers } = request
         fetchEventSource(url, {
           ...headers,
