@@ -9,13 +9,18 @@
       :lower-threshold="20"
       :show-scrollbar="false"
       @scroll="onScroll"
-      @scrolltolower="startAutoScroll"
+      @scrolltolower="enableAutoScroll = true"
     >
       <template
         v-for="({ prompt, answer }, index) in contents"
         :key="currentModel + index + hashCode(prompt)"
       >
-        <karte :prompt="prompt" :answer="answer" :index="index" />
+        <karte
+          :prompt="prompt"
+          :answer="answer"
+          :index="index"
+          @scroll-to-bottom="scrollToBottom"
+        />
       </template>
     </scroll-view>
     <view class="main__bottom-mask" />
@@ -28,7 +33,6 @@
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
   import { hashCode, useWaveNumber } from '@/utils/math'
-  import { useAutoResetRef } from '@/utils/ref'
   import Karte from './karte'
 
   const contentStore = useContentStore()
@@ -37,9 +41,11 @@
   const { currentModel } = storeToRefs(modelStore)
 
   const scrollTop = ref(0)
+  const enableAutoScroll = ref(true)
   const waveNumber = useWaveNumber()
 
   function scrollToBottom() {
+    if (!enableAutoScroll.value) return
     // 手动滚动视图不会更新 scrollTop
     // 且 scrollTop 赋同一值时不会触发滚动
     // 故此处附加一波动值 waveNumber
@@ -51,32 +57,11 @@
     setTimeout(scrollToBottom, (contents.value.length - 1) * 150),
   )
 
-  let timer
-
-  const { startAutoScroll, stopAutoScroll } = {
-    startAutoScroll() {
-      if (isFetching.value && !timer) {
-        timer = setInterval(scrollToBottom, 800)
-      }
-    },
-    stopAutoScroll() {
-      if (timer) {
-        clearInterval(timer)
-        timer = undefined
-      }
-    },
-  }
-
-  watch(isFetching, () => (isFetching.value ? startAutoScroll() : setTimeout(stopAutoScroll, 800)))
-
-  const inertia = useAutoResetRef(0)
+  watch(isFetching, () => isFetching.value && (enableAutoScroll.value = true))
 
   const onScroll = ({ detail }) => {
-    if (timer) {
-      if (detail.deltaY > 0 && inertia.value++ >= 25) {
-        // 连续 15 次向上滚动动作停止自动滚动
-        stopAutoScroll()
-      }
+    if (detail.deltaY > 0) {
+      enableAutoScroll.value = false
     }
   }
 </script>

@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-  import { onMounted, ref, computed } from 'vue'
+  import { onMounted, ref, computed, nextTick } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
@@ -45,6 +45,8 @@
     },
     answer: String,
   })
+
+  const emits = defineEmits(['scrollToBottom'])
 
   const modelStore = useModelStore()
   const contentStore = useContentStore()
@@ -91,6 +93,7 @@
       case 'message':
         const data = JSON.parse(resp.data)
         output.value += data?.result
+        nextTick(() => emits('scrollToBottom'))
         break
       case 'close':
         setAnswer(output.value, props.index)
