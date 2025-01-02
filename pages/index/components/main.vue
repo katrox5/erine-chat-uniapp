@@ -1,8 +1,19 @@
 <template>
   <view style="position: relative">
     <view class="main__top-mask" />
-    <scroll-view style="height: 100%" scroll-y scroll-with-animation :scroll-top="scrollTop">
-      <template v-for="({ prompt, answer }, index) in contents" :key="currentModel + index">
+    <scroll-view
+      style="height: 100%"
+      scroll-y
+      scroll-with-animation
+      :scroll-top="scrollTop"
+      :lower-threshold="20"
+      @scroll="onScroll"
+      @scrolltolower="startAutoScroll"
+    >
+      <template
+        v-for="({ prompt, answer }, index) in contents"
+        :key="currentModel + index + hashCode(prompt)"
+      >
         <karte :prompt="prompt" :answer="answer" :index="index" />
       </template>
     </scroll-view>
@@ -15,7 +26,8 @@
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import { useModelStore } from '@/stores/model'
-  import { useWaveNumber } from '@/utils/math'
+  import { hashCode, useWaveNumber } from '@/utils/math'
+  import { useAutoResetRef } from '@/utils/ref'
   import Karte from './karte'
 
   const contentStore = useContentStore()
@@ -24,6 +36,14 @@
   const { currentModel } = storeToRefs(modelStore)
 
   const scrollTop = ref(0)
+  const waveNumber = useWaveNumber()
+
+  function scrollToBottom() {
+    // 手动滚动视图不会更新 scrollTop
+    // 且 scrollTop 赋同一值时不会触发滚动
+    // 故此处附加一波动值 waveNumber
+    scrollTop.value = Number.MAX_SAFE_INTEGER + waveNumber()
+  }
 
   onMounted(() =>
     // 入场时滚动到底部
@@ -32,21 +52,36 @@
 
   let timer
 
-  watch(isFetching, () => {
-    if (isFetching.value) {
-      timer = setInterval(scrollToBottom, 500)
-    } else {
-      setTimeout(() => clearInterval(timer), 500)
+  const { startAutoScroll, stopAutoScroll } = {
+    startAutoScroll() {
+      if (isFetching.value && !timer) {
+        timer = setInterval(scrollToBottom, 800)
+      }
+    },
+    stopAutoScroll() {
+      if (timer) {
+        clearInterval(timer)
+        timer = undefined
+      }
+    },
+  }
+
+  watch(isFetching, () => (isFetching.value ? startAutoScroll() : setTimeout(stopAutoScroll, 800)))
+
+  const inertia = useAutoResetRef(0)
+  let lastScrollTop
+
+  const onScroll = ({ detail }) => {
+    if (timer) {
+      if (
+        detail.scrollTop - lastScrollTop < 0 &&
+        // 连续 15 次向上滚动动作停止自动滚动
+        inertia.value++ >= 25
+      ) {
+        stopAutoScroll()
+      }
     }
-  })
-
-  const waveNumber = useWaveNumber()
-
-  function scrollToBottom() {
-    // 手动滚动视图不会更新 scrollTop
-    // 且 scrollTop 赋同一值时不会触发滚动
-    // 故此处附加一波动值 waveNumber
-    scrollTop.value = Number.MAX_SAFE_INTEGER + waveNumber()
+    lastScrollTop = detail.scrollTop
   }
 </script>
 
