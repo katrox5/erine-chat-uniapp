@@ -15,7 +15,7 @@
     </view>
     <view class="card__content">
       <text class="card__label">A</text>
-      <markdown :is-loading="isLoading" :source="output" />
+      <markdown :is-loading="isLoading" :source="output || errorDescription" />
     </view>
   </view>
   <!-- SSE组件 为最新对话时启用，否则卸载 -->
@@ -53,6 +53,7 @@
   const { currentModel, modelData } = storeToRefs(modelStore)
 
   const output = ref('')
+  const errorDescription = ref('')
   const isLatest = computed(() => contents.value.length - 1 === props.index)
   const isLoading = computed(() => isLatest.value && isFetching.value)
 
@@ -61,7 +62,21 @@
   function sendRequest() {
     const { auth, ...headers } = modelData.value
     const adapter = modelAdapter.get(currentModel.value)
-    adapter.request(auth, headers, eventSourceRef.value)
+    adapter.request({
+      auth,
+      headers,
+      messenger: eventSourceRef.value,
+      success() {
+        isFetching.value = true
+      },
+      fail(res) {
+        uni.showToast({
+          title: res.error,
+          icon: 'error',
+        })
+        errorDescription.value = res.error_description
+      },
+    })
   }
 
   function reload() {
@@ -70,10 +85,8 @@
   }
 
   async function handleResponse(resp) {
-    // FIXME isFetching 设置的时机不对
     switch (resp.event) {
       case 'open':
-        isFetching.value = true
         break
       case 'message':
         const data = JSON.parse(resp.data)

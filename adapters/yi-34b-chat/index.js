@@ -8,16 +8,23 @@ function getToken(apiKey, secretKey) {
       url: url.replace('%API_KEY%', apiKey).replace('%SECRET_KEY%', secretKey),
       method: 'POST',
       success(res) {
-        resolve(res.data.access_token)
+        resolve(res)
       },
     })
   })
 }
 
-async function request(auth, headers, messenger) {
+async function request({ auth, headers, messenger, success, fail }) {
   if (!token) {
-    token = await getToken(auth.apiKey, auth.secretKey)
+    const res = await getToken(auth.apiKey, auth.secretKey)
+    if (res.statusCode === 200) {
+      token = res.data.access_token
+    } else {
+      fail({ status_code: res.statusCode, ...res.data })
+      return
+    }
   }
+  success()
   const { messages, options } = headers
   messenger?.send({
     url: `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/yi_34b_chat?access_token=${token}`,
