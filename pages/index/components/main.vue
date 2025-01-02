@@ -7,6 +7,7 @@
       scroll-with-animation
       :scroll-top="scrollTop"
       :lower-threshold="20"
+      :show-scrollbar="false"
       @scroll="onScroll"
       @scrolltolower="startAutoScroll"
     >
@@ -69,19 +70,14 @@
   watch(isFetching, () => (isFetching.value ? startAutoScroll() : setTimeout(stopAutoScroll, 800)))
 
   const inertia = useAutoResetRef(0)
-  let lastScrollTop
 
   const onScroll = ({ detail }) => {
     if (timer) {
-      if (
-        detail.scrollTop - lastScrollTop < 0 &&
+      if (detail.deltaY > 0 && inertia.value++ >= 25) {
         // 连续 15 次向上滚动动作停止自动滚动
-        inertia.value++ >= 25
-      ) {
         stopAutoScroll()
       }
     }
-    lastScrollTop = detail.scrollTop
   }
 </script>
 
