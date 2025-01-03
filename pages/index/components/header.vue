@@ -37,12 +37,13 @@
 
   const popupVisible = ref(false)
 
-  function openPopup() {
-    popupVisible.value = true
-  }
-
-  function closePopup() {
-    popupVisible.value = false
+  const { openPopup, closePopup } = {
+    openPopup() {
+      popupVisible.value = true
+    },
+    closePopup() {
+      popupVisible.value = false
+    },
   }
 
   function navigateToSetup() {

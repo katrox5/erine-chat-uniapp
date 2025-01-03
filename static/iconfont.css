@@ -10,6 +10,14 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.icon-maxmize:before {
+  content: "\e8b1";
+}
+
+.icon-minimize:before {
+  content: "\e86d";
+}
+
 .icon-send:before {
   content: "\e7f7";
 }
