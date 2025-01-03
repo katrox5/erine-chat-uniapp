@@ -1,11 +1,12 @@
 <template>
-  <view style="position: relative">
-    <fui-textarea
+  <view class="footer__container">
+    <textarea
       v-model="prompt"
-      maxlength="-1"
-      height="64rpx"
       placeholder="请输入问题"
-      :padding="['24rpx', '56rpx', '24rpx', '24rpx']"
+      placeholder-style="color: #ccc"
+      auto-height="true"
+      maxlength="-1"
+      class="footer__input"
     />
     <fui-icon
       custom-prefix="custom-icon"
@@ -22,7 +23,6 @@
   import { ref } from 'vue'
   import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
-  import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea'
   import fuiIcon from '@/components/firstui/fui-icon/fui-icon.vue'
 
   const contentStore = useContentStore()
@@ -48,12 +48,26 @@
 </script>
 
 <style lang="scss" scoped>
+  .footer__container {
+    display: flex;
+    align-items: flex-end;
+    padding: 12rpx;
+    background-color: #f8f8f8;
+    border-top: 1px solid #eee;
+  }
+  .footer__input {
+    font-size: 32rpx;
+    padding-inline: 6rpx;
+    background-color: #fff;
+    border-radius: 8rpx;
+    max-height: 200rpx;
+    min-height: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+  }
   .footer__send {
-    position: absolute;
-    inset: 50% 10rpx auto auto;
     padding: 8rpx;
     border-radius: 8rpx;
-    transform: translateY(-50%);
     &:active {
       background-color: #f3f3f3;
     }
