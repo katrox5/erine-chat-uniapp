@@ -20,17 +20,21 @@
 
 <script setup>
   import { ref } from 'vue'
+  import { storeToRefs } from 'pinia'
   import { useContentStore } from '@/stores/content'
   import fuiTextarea from '@/components/firstui/fui-textarea/fui-textarea'
   import fuiIcon from '@/components/firstui/fui-icon/fui-icon.vue'
 
   const contentStore = useContentStore()
+  const { isFetching } = storeToRefs(contentStore)
   const { addPrompt } = contentStore
 
   const prompt = ref('')
 
   function submit() {
-    // TODO 生成中返回
+    if (isFetching.value) {
+      return
+    }
     if (prompt.value === '') {
       uni.showToast({
         title: '问题不能为空',

@@ -19,7 +19,7 @@
           :prompt="prompt"
           :answer="answer"
           :index="index"
-          @scroll-to-bottom="scrollToBottom"
+          @scroll-into-view="scrollToBottom"
         />
       </template>
     </scroll-view>

@@ -44,16 +44,16 @@
         fetchEventSource(url, {
           ...headers,
           onopen() {
-            that.handleEmitData({ event: 'open' })
+            that.handleEmitData({ eventName: 'open' })
           },
           onmessage(res) {
-            that.handleEmitData({ event: 'message', data: res.data })
+            that.handleEmitData({ eventName: 'message', data: res.data })
           },
           onclose() {
-            that.handleEmitData({ event: 'close' })
+            that.handleEmitData({ eventName: 'close' })
           },
           onerror(error) {
-            that.handleEmitData({ event: 'error', data: JSON.stringify(error) })
+            that.handleEmitData({ eventName: 'error', data: JSON.stringify(error) })
           }
         })
   		}

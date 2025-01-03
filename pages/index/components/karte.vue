@@ -15,7 +15,7 @@
     </view>
     <view class="card__content">
       <text class="card__label">A</text>
-      <markdown :is-loading="isLoading" :source="output || errorDescription" />
+      <markdown :is-loading="isLoading" :source="output" />
     </view>
   </view>
   <!-- SSE组件 为最新对话时启用，否则卸载 -->
@@ -46,7 +46,7 @@
     answer: String,
   })
 
-  const emits = defineEmits(['scrollToBottom'])
+  const emits = defineEmits(['scrollIntoView'])
 
   const modelStore = useModelStore()
   const contentStore = useContentStore()
@@ -55,11 +55,13 @@
   const { currentModel, modelData } = storeToRefs(modelStore)
 
   const output = ref('')
-  const errorDescription = ref('')
   const isLatest = computed(() => contents.value.length - 1 === props.index)
   const isLoading = computed(() => isLatest.value && isFetching.value)
 
-  onMounted(() => (props.answer ? (output.value = props.answer) : sendRequest()))
+  onMounted(() => {
+    props.answer ? (output.value = props.answer) : sendRequest()
+    emits('scrollIntoView')
+  })
 
   function sendRequest() {
     const { auth, ...headers } = modelData.value
@@ -76,7 +78,7 @@
           title: res.error,
           icon: 'error',
         })
-        errorDescription.value = res.error_description
+        output.value = res.error_description
       },
     })
   }
@@ -87,13 +89,13 @@
   }
 
   async function handleResponse(resp) {
-    switch (resp.event) {
+    switch (resp.eventName) {
       case 'open':
         break
       case 'message':
         const data = JSON.parse(resp.data)
         output.value += data?.result
-        nextTick(() => emits('scrollToBottom'))
+        nextTick(() => emits('scrollIntoView'))
         break
       case 'close':
         setAnswer(output.value, props.index)
