@@ -3,10 +3,10 @@
     <textarea
       v-model="prompt"
       placeholder="请输入问题"
-      placeholder-style="color: #ccc"
       auto-height="true"
       maxlength="-1"
       class="footer__input"
+      placeholder-class="footer__input-placeholder"
       @linechange="lineChangeHandler"
     />
     <view class="footer__btn-group">
@@ -19,7 +19,7 @@
         @click="submit"
       />
       <fui-icon
-        v-if="fullBtnVisible"
+        v-if="maxmizeBtnVisible"
         custom-prefix="custom-icon"
         name="icon-maxmize"
         font-weight="bold"
@@ -49,7 +49,7 @@
         placeholder="请输入问题"
         placeholder-style="color: #ccc"
         maxlength="-1"
-        class="footer__input--full"
+        class="footer__input-full"
         :adjust-position="false"
         :style="{ marginBottom: fullInputBottomValue }"
         @keyboardheightchange="keyboardHeightChangeHandler"
@@ -71,8 +71,8 @@
 
   const prompt = ref('')
 
-  const fullBtnVisible = ref(false)
   const popupVisible = ref(false)
+  const maxmizeBtnVisible = ref(false)
   const fullInputBottomValue = ref('0')
 
   const { openPopup, closePopup } = {
@@ -86,7 +86,7 @@
 
   const { lineChangeHandler, keyboardHeightChangeHandler } = {
     lineChangeHandler({ detail }) {
-      fullBtnVisible.value = detail.lineCount >= 4
+      maxmizeBtnVisible.value = detail.lineCount >= 4
     },
     keyboardHeightChangeHandler({ detail }) {
       fullInputBottomValue.value = `${detail.height}px`
@@ -127,7 +127,12 @@
     flex-grow: 1;
     overflow-y: auto;
   }
-  .footer__input--full {
+  .footer__input-placeholder {
+    color: #ccc;
+    display: flex;
+    align-items: center;
+  }
+  .footer__input-full {
     box-sizing: border-box;
     font-size: 32rpx;
     padding-inline: 16rpx;
