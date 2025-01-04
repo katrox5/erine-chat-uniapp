@@ -55,7 +55,14 @@
 </script>
 
 <style scoped>
-  @keyframes blinking {
+  .cursor {
+    position: absolute;
+    bottom: 0;
+    border-right: 0.35rem solid;
+    animation: blink 1s step-end infinite;
+    mix-blend-mode: difference;
+  }
+  @keyframes blink {
     from,
     to {
       border-color: transparent;
@@ -63,12 +70,5 @@
     50% {
       border-color: #fff;
     }
-  }
-  .cursor {
-    position: absolute;
-    bottom: 0;
-    border-right: 0.35rem solid;
-    animation: blinking 1s step-end infinite;
-    mix-blend-mode: difference;
   }
 </style>

@@ -31,7 +31,7 @@
     </view>
   </view>
   <fui-bottom-popup :show="popupVisible" :maskClosable="false">
-    <view>
+    <view style="padding-bottom: 32rpx">
       <view style="display: flex">
         <fui-icon
           custom-prefix="custom-icon"
@@ -50,7 +50,8 @@
         placeholder-style="color: #ccc"
         maxlength="-1"
         class="footer__input--full"
-        :style="{ height: fullInputHeight }"
+        :adjust-position="false"
+        :style="{ marginBottom: fullInputBottomValue }"
         @keyboardheightchange="keyboardHeightChangeHandler"
       />
     </view>
@@ -72,7 +73,7 @@
 
   const fullBtnVisible = ref(false)
   const popupVisible = ref(false)
-  const fullInputHeight = ref('80vh')
+  const fullInputBottomValue = ref('0')
 
   const { openPopup, closePopup } = {
     openPopup() {
@@ -83,14 +84,13 @@
     },
   }
 
-  const lineChangeHandler = ({ detail }) => {
-    // FIXME 使用 fullInput 编辑不会触发更新
-    fullBtnVisible.value = detail.lineCount >= 4
-  }
-
-  const keyboardHeightChangeHandler = ({ detail }) => {
-    // FIXME 高度变化有延迟，会出现频闪现象
-    fullInputHeight.value = `calc(80vh - ${detail.height}px)`
+  const { lineChangeHandler, keyboardHeightChangeHandler } = {
+    lineChangeHandler({ detail }) {
+      fullBtnVisible.value = detail.lineCount >= 4
+    },
+    keyboardHeightChangeHandler({ detail }) {
+      fullInputBottomValue.value = `${detail.height}px`
+    },
   }
 
   function submit() {
@@ -132,6 +132,7 @@
     font-size: 32rpx;
     padding-inline: 16rpx;
     width: 100%;
+    height: 50vh;
     /* FIXME fullInput 无法滑动 */
   }
   .footer__btn-group {

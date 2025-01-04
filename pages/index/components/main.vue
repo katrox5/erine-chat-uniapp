@@ -8,7 +8,7 @@
       :scroll-top="scrollTop"
       :lower-threshold="20"
       :show-scrollbar="false"
-      @scroll="onScroll"
+      @scroll="scrollHandler"
       @scrolltolower="enableAutoScroll = true"
     >
       <template
@@ -45,11 +45,10 @@
   const waveNumber = useWaveNumber()
 
   function scrollToBottom() {
-    if (!enableAutoScroll.value) return
     // 手动滚动视图不会更新 scrollTop
     // 且 scrollTop 赋同一值时不会触发滚动
     // 故此处附加一波动值 waveNumber
-    scrollTop.value = Number.MAX_SAFE_INTEGER + waveNumber()
+    enableAutoScroll.value && (scrollTop.value = Number.MAX_SAFE_INTEGER + waveNumber())
   }
 
   onMounted(() =>
@@ -59,10 +58,8 @@
 
   watch(isFetching, () => isFetching.value && (enableAutoScroll.value = true))
 
-  const onScroll = ({ detail }) => {
-    if (detail.deltaY > 0) {
-      enableAutoScroll.value = false
-    }
+  const scrollHandler = ({ detail }) => {
+    detail.deltaY > 0 && (enableAutoScroll.value = false)
   }
 </script>
 
