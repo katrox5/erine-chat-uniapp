@@ -3,10 +3,10 @@
     <textarea
       v-model="prompt"
       placeholder="请输入问题"
+      placeholder-style="color: #ccc"
       auto-height="true"
       maxlength="-1"
       class="footer__input"
-      placeholder-class="footer__input-placeholder"
       @linechange="lineChangeHandler"
     />
     <view class="footer__btn-group">
@@ -128,11 +128,6 @@
     min-height: 100%;
     flex-grow: 1;
     overflow-y: auto;
-  }
-  .footer__input-placeholder {
-    color: #ccc;
-    display: flex;
-    align-items: center;
   }
   .footer__input-full {
     box-sizing: border-box;
