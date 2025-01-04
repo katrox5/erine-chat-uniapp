@@ -31,7 +31,7 @@
     </view>
   </view>
   <fui-bottom-popup :show="popupVisible" :maskClosable="false">
-    <view style="padding-bottom: 32rpx">
+    <view :style="{ paddingBottom: '24rpx', marginBottom: fullInputBottomValue }">
       <view style="display: flex">
         <fui-icon
           custom-prefix="custom-icon"
@@ -44,16 +44,18 @@
           @click="closePopup"
         />
       </view>
-      <textarea
-        v-model="prompt"
-        placeholder="请输入问题"
-        placeholder-style="color: #ccc"
-        maxlength="-1"
-        class="footer__input-full"
-        :adjust-position="false"
-        :style="{ marginBottom: fullInputBottomValue }"
-        @keyboardheightchange="keyboardHeightChangeHandler"
-      />
+      <scroll-view scroll-y>
+        <textarea
+          v-model="prompt"
+          placeholder="请输入问题"
+          placeholder-style="color: #ccc"
+          maxlength="-1"
+          auto-height
+          class="footer__input-full"
+          :adjust-position="false"
+          @keyboardheightchange="keyboardHeightChangeHandler"
+        />
+      </scroll-view>
     </view>
   </fui-bottom-popup>
 </template>
@@ -137,8 +139,8 @@
     font-size: 32rpx;
     padding-inline: 16rpx;
     width: 100%;
-    height: 50vh;
-    /* FIXME fullInput 无法滑动 */
+    min-height: 50vh;
+    max-height: 50vh;
   }
   .footer__btn-group {
     display: flex;
